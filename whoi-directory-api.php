@@ -39,11 +39,28 @@ function search_users( $data ) {
     $search_dept = $data['search_dept'];
     $search_dept = esc_sql(sanitize_text_field($search_dept));
 
+    $search_position = $data['search_position'];
+    $search_position = esc_sql(sanitize_text_field($search_position));
+
+    $search_building = $data['search_building'];
+    $search_building = esc_sql(sanitize_text_field($search_building));
+
+    $search_mail_stop = $data['search_mail_stop'];
+    $search_mail_stop = esc_sql(sanitize_text_field($search_mail_stop));
+
+    $search_phone = $data['search_phone'];
+    $search_phone = esc_sql(sanitize_text_field($search_phone));
+
     // set up find parameters, where meta field matches $user_search_terms
     $params = array(
         'limit' => -1,
         'orderby' => 'last_name.meta_value ASC',
-        'where' => 'name_search.meta_value Like "%' . $user_search_terms . '%" AND department.meta_value LIKE "%' . $search_dept . '%"'
+        'where' => 'name_search.meta_value Like "%' . $user_search_terms .
+                   '%" AND department.meta_value LIKE "%' . $search_dept .
+                   '%" AND hr_job_title.meta_value LIKE "%' . $search_position .
+                   '%" AND building.meta_value LIKE "%' . $search_building .
+                   '%" AND mail_stop.meta_value LIKE "%' . $search_mail_stop .
+                   '%" AND office_phone.meta_value LIKE "%' . $search_phone . '%"'
      );
 
     //search in User pod
