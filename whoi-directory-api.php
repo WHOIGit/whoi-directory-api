@@ -82,7 +82,9 @@ function search_users( $data ) {
                         'first_name' => $first_name,
                         'last_name' => $last_name,
                         'hr_job_title' => $users->field( 'hr_job_title' ),
+                        'office_phone' => $users->field( 'office_phone' ),
                         'department' => $users->field( 'department' ),
+                        'mail_stop' => $users->field( 'mail_stop' ),
                         'building' => $users->field( 'building' )
                     );
                 array_push($export_data, $user_export);
