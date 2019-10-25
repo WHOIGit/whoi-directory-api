@@ -228,3 +228,68 @@ function get_users_by_department( $data ) {
         return null;
     }
 }
+
+/**
+ * Get all users by Department and Job Category
+ *
+ * @param array $data Department Name/Job Category
+ * @return array|null User list
+ */
+
+ add_action( 'rest_api_init', function () {
+   register_rest_route( 'whoi_directory/v1', '/users/department-people/', array(
+     'methods' => 'POST',
+     'callback' => __NAMESPACE__ . '\search_users_by_department_category',
+   ) );
+ } );
+
+function search_users_by_department_category( $data ) {
+
+    $search_dept = $data['search_dept'];
+    $search_dept = esc_sql(sanitize_text_field($search_dept));
+
+    $search_job_category = $data['search_job_category'];
+    $search_job_category = esc_sql(sanitize_text_field($search_job_category));
+
+    // set up find parameters, where meta field matches $user_search_terms
+    $params = array(
+        'limit' => -1,
+        'orderby' => 'last_name.meta_value ASC',
+        'where' => 'job_categories.meta_value Like "%' . $search_job_category .
+                   '%" AND department.meta_value LIKE "%' . $search_dept . '%"'
+     );
+
+    //search in User pod
+    $users = pods( 'user', $params );
+
+    $export_data = array();
+
+    if ( 0 < $users->total() ) {
+        while ( $users->fetch() ) {
+            if ( ! $users->field( 'privacy_flag' ) ) {
+                // Get User Meta data for first/last name
+                $all_meta_for_user = get_user_meta( $users->field( 'id' ) );
+
+                $first_name = $all_meta_for_user['first_name'][0];
+                $last_name = $all_meta_for_user['last_name'][0];
+
+                $user_export = array(
+                        'username' => $users->field( 'user_login' ),
+                        'first_name' => $first_name,
+                        'last_name' => $last_name,
+                        'hr_job_title' => $users->field( 'hr_job_title' ),
+                        'office_phone' => $users->field( 'office_phone' ),
+                        'department' => $users->field( 'department' ),
+                        'mail_stop' => $users->field( 'mail_stop' ),
+                        'building' => $users->field( 'building' )
+                    );
+                array_push($export_data, $user_export);
+            }
+        }
+
+        return json_encode($export_data);
+
+    } else {
+        return null;
+    }
+}
