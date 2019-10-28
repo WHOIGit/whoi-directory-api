@@ -135,10 +135,12 @@ function get_user_by_username( $data ) {
 
                 $first_name = $all_meta_for_user['first_name'][0];
                 $last_name = $all_meta_for_user['last_name'][0];
+                $description = $all_meta_for_user['description'][0];
 
                 $user_export = array(
                         'first_name' => $first_name,
                         'last_name' => $last_name,
+                        'description' => $description,
                         'website' => $users->field( 'user_url' ),
                         'hr_job_title' => $users->field( 'hr_job_title' ),
                         'working_title' => $users->field( 'working_title' ),
@@ -150,6 +152,7 @@ function get_user_by_username( $data ) {
                         'mail_stop' => $users->field( 'mail_stop' ),
                         'labgroup_site' => $users->field( 'labgroup_site' ),
                         'education' => $users->field( 'education' ),
+                        'research_statement' => $users->field( 'research_statement' ),
                         'other_info' => $users->field( 'other_info' ),
                         'photo' => $users->field( 'photo' ),
                         'vita' => $users->field( 'vita' ),
@@ -287,7 +290,7 @@ function search_users_by_department_category( $data ) {
             }
         }
 
-        return json_encode($export_data);
+        return $export_data;
 
     } else {
         return null;
