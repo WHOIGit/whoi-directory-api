@@ -32,6 +32,9 @@ if ( ! defined( 'WPINC' ) ) {
  } );
 
 function search_users( $data ) {
+    // Get the custom Apache header to check internal/external WHOI requests
+    $headers = getallheaders();
+    $whoi_external_ip = $headers['WHOI-External-IP'];
 
     $user_search_terms = $data['user_search_terms'];
     $user_search_terms = esc_sql(sanitize_text_field($user_search_terms));
@@ -50,6 +53,9 @@ function search_users( $data ) {
 
     $search_phone = $data['search_phone'];
     $search_phone = esc_sql(sanitize_text_field($search_phone));
+
+    $form_type = $data['$form_type'];
+    $form_type = esc_sql(sanitize_text_field($form_type));
 
     // set up find parameters, where meta field matches $user_search_terms
     $params = array(
@@ -70,7 +76,27 @@ function search_users( $data ) {
 
     if ( 0 < $users->total() ) {
         while ( $users->fetch() ) {
-            if ( ! $users->field( 'privacy_flag' ) ) {
+            if ($whoi_external_ip) {
+                if ( ! $users->field( 'privacy_flag' ) ) {
+                    // Get User Meta data for first/last name
+                    $all_meta_for_user = get_user_meta( $users->field( 'id' ) );
+
+                    $first_name = $all_meta_for_user['first_name'][0];
+                    $last_name = $all_meta_for_user['last_name'][0];
+
+                    $user_export = array(
+                            'username' => $users->field( 'user_login' ),
+                            'first_name' => $first_name,
+                            'last_name' => $last_name,
+                            'hr_job_title' => $users->field( 'hr_job_title' ),
+                            'office_phone' => $users->field( 'office_phone' ),
+                            'department' => $users->field( 'department' ),
+                            'mail_stop' => $users->field( 'mail_stop' ),
+                            'building' => $users->field( 'building' )
+                        );
+                    array_push($export_data, $user_export);
+                }
+            } else {
                 // Get User Meta data for first/last name
                 $all_meta_for_user = get_user_meta( $users->field( 'id' ) );
 
@@ -113,6 +139,9 @@ function search_users( $data ) {
 
 function get_user_by_username( $data ) {
 
+    // Get the custom Apache header to check internal/external WHOI requests
+    $headers = getallheaders();
+    $whoi_external_ip = $headers['WHOI-External-IP'];
     $username = $data['username'];
     $username = esc_sql(sanitize_text_field($username));
 
@@ -129,7 +158,39 @@ function get_user_by_username( $data ) {
 
     if ( 0 < $users->total() ) {
         while ( $users->fetch() ) {
-            if ( ! $users->field( 'privacy_flag' ) ) {
+            if ($whoi_external_ip) {
+                if ( ! $users->field( 'privacy_flag' ) ) {
+                    // Get User Meta data for first/last name
+                    $all_meta_for_user = get_user_meta( $users->field( 'id' ) );
+
+                    $first_name = $all_meta_for_user['first_name'][0];
+                    $last_name = $all_meta_for_user['last_name'][0];
+                    $description = $all_meta_for_user['description'][0];
+
+                    $user_export = array(
+                            'first_name' => $first_name,
+                            'last_name' => $last_name,
+                            'description' => $description,
+                            'website' => $users->field( 'user_url' ),
+                            'hr_job_title' => $users->field( 'hr_job_title' ),
+                            'working_title' => $users->field( 'working_title' ),
+                            'department' => $users->field( 'department' ),
+                            'office_phone' => $users->field( 'office_phone' ),
+                            'user_email' => $users->field( 'user_email' ),
+                            'building' => $users->field( 'building' ),
+                            'office' => $users->field( 'office' ),
+                            'mail_stop' => $users->field( 'mail_stop' ),
+                            'labgroup_site' => $users->field( 'labgroup_site' ),
+                            'education' => $users->field( 'education' ),
+                            'research_statement' => $users->field( 'research_statement' ),
+                            'other_info' => $users->field( 'other_info' ),
+                            'photo' => $users->field( 'photo' ),
+                            'vita' => $users->field( 'vita' ),
+                            'privacy_flag' => $users->field( 'privacy_flag' )
+                        );
+                    array_push($export_data, $user_export);
+                }
+            } else {
                 // Get User Meta data for first/last name
                 $all_meta_for_user = get_user_meta( $users->field( 'id' ) );
 
