@@ -88,6 +88,7 @@ function search_users( $data ) {
                             'username' => $users->field( 'user_login' ),
                             'first_name' => $first_name,
                             'last_name' => $last_name,
+                            'preferred_name' => $users->field( 'preferred_name' ),
                             'hr_job_title' => $users->field( 'hr_job_title' ),
                             'office_phone' => $users->field( 'office_phone' ),
                             'department' => $users->field( 'department' ),
@@ -107,6 +108,7 @@ function search_users( $data ) {
                         'username' => $users->field( 'user_login' ),
                         'first_name' => $first_name,
                         'last_name' => $last_name,
+                        'preferred_name' => $users->field( 'preferred_name' ),
                         'hr_job_title' => $users->field( 'hr_job_title' ),
                         'office_phone' => $users->field( 'office_phone' ),
                         'department' => $users->field( 'department' ),
@@ -170,6 +172,8 @@ function get_user_by_username( $data ) {
                     $user_export = array(
                             'first_name' => $first_name,
                             'last_name' => $last_name,
+                            'preferred_name' => $users->field( 'preferred_name' ),
+                            'preferred_pronouns' => $users->field( 'preferred_pronouns' ),
                             'description' => $description,
                             'website' => $users->field( 'user_url' ),
                             'hr_job_title' => $users->field( 'hr_job_title' ),
@@ -201,6 +205,8 @@ function get_user_by_username( $data ) {
                 $user_export = array(
                         'first_name' => $first_name,
                         'last_name' => $last_name,
+                        'preferred_name' => $users->field( 'preferred_name' ),
+                        'preferred_pronouns' => $users->field( 'preferred_pronouns' ),
                         'description' => $description,
                         'website' => $users->field( 'user_url' ),
                         'hr_job_title' => $users->field( 'hr_job_title' ),
@@ -278,9 +284,11 @@ function get_users_by_department( $data ) {
                         'username' => $users->field( 'user_login' ),
                         'first_name' => $first_name,
                         'last_name' => $last_name,
+                        'preferred_name' => $users->field( 'preferred_name' ),
                         'hr_job_title' => $users->field( 'hr_job_title' ),
                         'department' => $users->field( 'department' ),
-                        'building' => $users->field( 'building' )
+                        'building' => $users->field( 'building' ),
+                        'photo' => $users->field( 'photo' )
                     );
                 array_push($export_data, $user_export);
             }
@@ -341,6 +349,7 @@ function search_users_by_department_category( $data ) {
                         'username' => $users->field( 'user_login' ),
                         'first_name' => $first_name,
                         'last_name' => $last_name,
+                        'preferred_name' => $users->field( 'preferred_name' ),
                         'hr_job_title' => $users->field( 'hr_job_title' ),
                         'office_phone' => $users->field( 'office_phone' ),
                         'department' => $users->field( 'department' ),
